@@ -123,6 +123,9 @@ class Main:
         except Exception, e:
             return 'Account not found: ' + e.message
 
+        # Remember account ID in session
+        cp.session['account'] = aid
+
         # Start page, with buttons to add transaction and to reconcile
         s = StringIO()
         header(s, 'accounts')
@@ -152,7 +155,7 @@ class Main:
                 elif l.cleared == '*':
                     cleared += (l.debit - l.credit)
             stmtBal = cp.session.get('reconcile_stmt_bal', 0.) # user input
-            diff = cleared - stmtBal
+            diff = stmtBal - (prCleared + cleared)
 
             # Embed the values in Javascript, so the event handlers can update them
             s.write('<script type="text/javascript">\n')
@@ -168,6 +171,8 @@ class Main:
             s.write('= total cleared <span class="greyfield" id="tot_cleared">%.2f</span> ==&gt;\n' % (prCleared + cleared))
             s.write('<span class="greyfield" id="diff">%.2f</span> difference</p>\n' % diff)
             s.write('</p>\n')
+            s.write('<p><a href="/finishReconciliation" class="btn btn-sm btn-primary" enabled=false>Done</a>\n')
+            s.write('<a href="/finishReconciliation?cancel=1" class="btn btn-sm btn-danger">Cancel</a></p>\n')
             s.write('</div>\n')
 
         # Show table of transactions, most recent at the bottom (to allow for easy running balance)
@@ -201,6 +206,53 @@ class Main:
 
         footer(s)
         return s.getvalue()
+
+
+    # AJAX handler for reconciliation, toggling a transaction
+    # Arguments: 
+    #   check99=true        to toggle line 99
+    #   stmtbal=9999.99     to set the statement balance
+    #   done=1              to finish reconciliation
+    @cp.expose
+    def reconcileEvent(self, **args):
+
+        # Set statement balance
+        if 'stmtbal' in args:
+            stmtBal = float(args['stmtbal'])
+            cp.session['reconcile_stmt_bal'] = stmtBal
+            return '* Statement balance set to %f' % stmtBal
+
+        # Toggle a GL line
+        for a in args.keys():
+            if a.startswith('clear'):
+                lid = int(a[5:])
+                on = args[a] == 'true'
+                l = GL.get(lid)
+                l.cleared = '*' if on else ' '
+                return '* GL %d cleared set to %s' % (lid, on)
+
+
+    # Finish or cancel reconciliation
+    @cp.expose
+    def finishReconciliation(self, **args):
+
+        # Update flags depending on whether cancelling or not
+        cancel = 'cancel' in args
+        new_flag = ' ' if cancel else 'X'
+        conn = connection.getConnection()
+        cur = conn.cursor()
+        cur.execute("update GL set cleared = '%s' where cleared = '*'" % new_flag)
+        cur.close()
+        conn.commit()
+
+        # Turn off reconciliation in session
+        if 'reconcile' in cp.session:
+            del cp.session['reconcile']
+        if 'reconcile_stmt_bal' in cp.session:
+            del cp.session['reconcile_stmt_bal']
+
+        # Go back to the account page
+        raise cp.HTTPRedirect('/account?id=%d' % cp.session['account'])
 
 
     # Page to list all transactions

@@ -24,13 +24,25 @@ function checkReconcile(evt)
     else
         cleared -= netAmt;
 
-    // Update three fields in the reconciliation box: cleared, total cleared, and difference
+    // Update three fields in the reconciliation box: cleared, total cleared,
+    // and difference
     gid("cleared").firstChild.data = cleared;
     gid("tot_cleared").firstChild.data = pr_cleared + cleared;
     gid("diff").firstChild.data = stmt_bal - (pr_cleared + cleared);
 
+    // Enable/disable the "done" button, enable only if difference is zero
+
     // Send an AJAX request to the server, to toggle the cleared column for
     // this transaction
+    var http = getHttp();
+    http.onreadystatechange = function() {
+        if ( http.readyState == 4 ) {
+            console.log(http.responseText);
+        };
+    };
+    http.open('POST', 'reconcileEvent', true);
+    http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    http.send(cbox.id + '=' + cbox.checked);
 }
 
 
@@ -49,10 +61,18 @@ function reconcileSetStmtBal(evt)
     stmt_bal = value;
 
     // Update the "difference" field
-    var diff = gid("diff");
-    diff.firstChild.data = stmt_bal - (pr_cleared + cleared);
+    gid("diff").firstChild.data = stmt_bal - (pr_cleared + cleared);
 
     // Send an AJAX request to the server, to update the value
+    var http = getHttp();
+    http.onreadystatechange = function() {
+        if ( http.readyState == 4 ) {
+            console.log(http.responseText);
+        };
+    };
+    http.open('POST', 'reconcileEvent', true);
+    http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    http.send('stmtbal=' + stmt_bal);
 }
 
 
@@ -68,5 +88,24 @@ function dateStringToUTC(s)
 {
     var d = new Date(s);
     return Date.UTC(d.getYear() + 1900, d.getMonth(), d.getDate());
+}
+
+
+// Get the AJAX request object
+function getHttp()
+{
+    var h = null;
+    if ( window.ActiveXObject ) {
+        try {
+            h = new window.ActiveXObject("Microsoft.XMLHTTP");
+        } catch ( e ) {
+            h = null;
+        }
+    }
+    else
+        h = new XMLHttpRequest();
+    if ( ! h ) 
+        console.log("Could not contact server");
+    return h;
 }
 
