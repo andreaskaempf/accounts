@@ -1,8 +1,6 @@
 *.pyc
 *.db 
 static/bootstrap3
-static/jquery.min.js
-static/highcharts.js
 upload
 copy_database_from_server
 *.old
