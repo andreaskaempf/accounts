@@ -1,0 +1,16 @@
+Unicode
+Edit existing transaction, save as new
+Date column width
+Export data (download database)
+User accounts: Logins, and record who edited/deleted transactions
+Reconcile
+Delete transaction? but not if reconciled
+Future transactions in yellow
+Format thousands
+
+DONE:
+List of all transactions
+Balance sheet
+Income statement
+Post existing transaction as new
+Remember last date

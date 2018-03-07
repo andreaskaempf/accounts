@@ -1,0 +1,119 @@
+commit ae1a52459497cd61a4c06ad4a1ec47a279a307c5
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Sat Sep 30 08:20:29 2017 +0100
+
+    Scripts to restart and to download database
+
+commit 7191dbe1e73f44e5276db30a10c796fd503caa4e
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Sat Sep 30 08:07:10 2017 +0100
+
+    Changes to 10 Sep: fixed some links, hints, last date
+
+commit 602ce8a0d248fb3dc817b0a88c9e57fc98015d46
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Sun Sep 10 15:56:59 2017 +0100
+
+    Removed old transaction entry
+
+commit afbbd598a1fc5d61104979beddba0daeaa21d82a
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Sun Sep 10 15:54:42 2017 +0100
+
+    Removed loans report
+
+commit 15cd33705885acca7a271801a0a9cef07ac1ed90
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Sun Sep 10 15:53:30 2017 +0100
+
+    New simpler transaction entry, from within an account
+
+commit 8c16f2d4e9a5552649015c115b59a21800f5be26
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Thu Aug 24 19:18:13 2017 +0100
+
+    Added static page handler via CherryPy
+
+commit 266530240366ea21cede79c2af5690495591cb70
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Mon Jul 11 18:08:59 2016 +0100
+
+    Loans graph working, using Highcharts
+
+commit 6f2766eaf310e88e9d9b726fffc838cbf463a2e5
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Thu Jun 30 13:05:13 2016 +0100
+
+    Initial work on loans graph (just back-end and event handler)
+
+commit 211e9a3fee6c9a246fc5974e6172237bae472f62
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Fri May 20 11:20:56 2016 +0100
+
+    Added loans report
+
+commit 81a330ad260421549144020f05b6df33c48960d0
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Tue May 3 19:34:56 2016 +0100
+
+    Added upload script and users file (5 Feb); script to download database
+
+commit 8cf996fff2e2aa18640049423c197cb99bcfef55
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Fri Feb 5 12:57:01 2016 +0000
+
+    Changed from sqlite to postgresql, other changes for server
+
+commit cb593a8ea8aa3317ed8c2ed98865a1ea799f0ee7
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Fri Feb 5 12:08:43 2016 +0000
+
+    Menu, income statement, balance sheet
+
+commit e0e730097a64e952819e20e35006829060e1ca46
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Fri Feb 5 11:18:35 2016 +0000
+
+    Post existing transaction as new, took out reference, other minor changes
+
+commit 8bd882ff14441da39d023ce86b695b03ce2694be
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Fri Feb 5 10:05:41 2016 +0000
+
+    Added transactions page, with link to transactions
+
+commit 88c219ccc48b47d67d4f72aaf37c8b022371a38e
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Fri Feb 5 09:38:38 2016 +0000
+
+    Minor changes (04/02)
+
+commit 34685ad546752f0b11207511e03fc67a5e2fc0ac
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Fri Jan 29 14:00:02 2016 +0000
+
+    Fixed some transactino editing issues
+
+commit ae9e01174854ba045fe76dbe9e0f48158af8b119
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Thu Jan 28 23:48:11 2016 +0000
+
+    Edit transaction basically working
+
+commit 5181617c18ef6a6ca276f41bd9971a5eeb7bfefb
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Mon Jan 25 20:02:21 2016 +0000
+
+    View accounts, edit transactions (incomplete)
+
+commit 4007d219bcd4d2f8ef666c4a31f432bb2dbf34d0
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Mon Jan 18 11:49:47 2016 +0000
+
+    Changed database to sqlite
+
+commit 9003607f24bb97159893635fbfbbc9f8a6641e16
+Author: Andreas Kaempf <andreas.kaempf@soundience.com>
+Date:   Mon Jan 18 11:35:10 2016 +0000
+
+    Basic structure, including database, to 18 Dec 2013
