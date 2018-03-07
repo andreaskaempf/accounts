@@ -2,7 +2,7 @@
 #
 #   db.py
 #
-#   SQLObject database definition for accountz.
+#   SQLObject database definition for accounts.
 
 
 import sys, md5, os
@@ -11,8 +11,8 @@ from datetime import date, datetime, timedelta
 
 
 # Create connection
-#//connection = connectionForURI('postgres://localhost/datamind_accounts')
-connection = connectionForURI('sqlite://%s/kaempf.db' % os.getcwd())
+#//connection = connectionForURI('postgres://localhost/accounts')
+connection = connectionForURI('sqlite://%s/data.db' % os.getcwd())
 sqlhub.processConnection = connection
 
 
