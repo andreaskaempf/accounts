@@ -1,0 +1,15 @@
+#reconcile {
+  background-color: #efe;
+  border: 2px solid #4a4;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.greyfield {
+  background-color: #ccc;
+  padding: 2px 8px;
+  border: 1px solid #888;
+}
+
+

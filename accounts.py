@@ -123,17 +123,57 @@ class Main:
         except Exception, e:
             return 'Account not found: ' + e.message
 
+        # Start page, with buttons to add transaction and to reconcile
         s = StringIO()
         header(s, 'accounts')
         s.write('<h1>%s ' % a.name)
-        s.write('<a href="/qtransaction?aid=%d" class="btn btn-primary btn-xs">Add Transaction</a></h1>\n' % aid)
+        s.write('<a href="/qtransaction?aid=%d" class="btn btn-primary btn-xs">Add Transaction</a>\n' % aid)
 
-        s.write('<table class="table table-striped table-bordered">\n')
-        th(s, ['Date', 'Description', '*', 'Debit', 'Credit', 'Balance'])
+        # Get status of reconciliation, and show button if not currently reconciling
+        if 'reconcile' in args:
+            cp.session['reconcile'] = 1
+        reconciling = 'reconcile' in cp.session
+        if not reconciling:
+            s.write('<a href="/account?id=%d&reconcile=1" class="btn btn-primary btn-xs">Reconcile</a>\n' % aid)
+        s.write('</h1>\n')
 
-        bal = 0
+        # Get all the transaction lines in a list, sorted by date
         ll = list(a.lines)
         ll.sort(lambda a,b: cmp(a.trans.tdate, b.trans.tdate))
+
+        # If reconciling, show box at top
+        if reconciling:
+
+            # Do the math
+            prCleared = cleared = 0.    # get from data, status 'X' or '*'
+            for l in ll:
+                if l.cleared == 'X':
+                    prCleared += (l.debit - l.credit)
+                elif l.cleared == '*':
+                    cleared += (l.debit - l.credit)
+            stmtBal = cp.session.get('reconcile_stmt_bal', 0.) # user input
+            diff = cleared - stmtBal
+
+            # Embed the values in Javascript, so the event handlers can update them
+            s.write('<script type="text/javascript">\n')
+            s.write('var pr_cleared = %f, cleared = %f, stmt_bal = %f;' % (prCleared, cleared, stmtBal));
+            s.write('</script>\n')
+
+            # Show values in box
+            s.write('<div id="reconcile">\n')
+            s.write('<p><b>Reconciliation</b> : \n')
+            s.write('Statement final balance = <input type="text" value="%.2f" onchange="reconcileSetStmtBal(event)" /></p>\n' % stmtBal)
+            s.write('<p>Prev cleared <span class="greyfield" id="pr_cleared">%.2f</span>\n' % prCleared)
+            s.write('+ new cleared <span class="greyfield" id="cleared">%.2f</span>\n' % cleared)
+            s.write('= total cleared <span class="greyfield" id="tot_cleared">%.2f</span> ==&gt;\n' % (prCleared + cleared))
+            s.write('<span class="greyfield" id="diff">%.2f</span> difference</p>\n' % diff)
+            s.write('</p>\n')
+            s.write('</div>\n')
+
+        # Show table of transactions, most recent at the bottom (to allow for easy running balance)
+        s.write('<table class="table table-striped table-bordered">\n')
+        th(s, ['Date', 'Description', '*', 'Debit', 'Credit', 'Balance'])
+        bal = 0
         for l in ll:
 
             t = l.trans
@@ -144,7 +184,11 @@ class Main:
             s.write('<tr>\n')
             s.write(' <td>%s <a href="/qtransaction?aid=%d&tid=%d"><img src="/static/edit.gif"/></a></td>\n' % (t.tdate, aid, t.id))
             s.write(' <td>%s</td>\n' % t.description)
-            s.write(' <td>%s</td>\n' % l.cleared)
+            if reconciling and l.cleared != 'X':
+                ck = 'checked' if l.cleared == '*' else ''
+                s.write(' <td><input type="checkbox" id="clear%d" %s onchange="checkReconcile(event)" /></td>\n' % (l.id, ck))
+            else:
+                s.write(' <td>%s</td>\n' % l.cleared)
             s.write(' <td style="text-align: right">%s</td>\n' % ('' if cr == 0.0 else '%.2f' % cr))
             s.write(' <td style="text-align: right">%s</td>\n' % ('' if dr == 0.0 else '%.2f' % dr))
             s.write(' <td style="text-align: right">%.2f</td>\n' % bal)

@@ -1,61 +1,72 @@
-// Draw the loans graph
+// Event handlers for accounts system.
 
 
+// Event handler for clicking the checkbox on a transaction
+function checkReconcile(evt)
+{
+    // Get the checkbox and its current status
+    var cbox = evt.target;
 
-// Convert "2016-01-23" to UTC date
+    // Get the debit and credit values from the same row on the table
+    var td = cbox.parentElement,                // the surrounding table cell
+        drCell = td.nextSibling.nextSibling,    // next cell over (skip over newline)
+        drAmt = drCell.firstChild,              // contents of the debit cell
+        crCell = drCell.nextSibling.nextSibling,// next cell over (skip over newline)
+        crAmt = crCell.firstChild;              // contents of the credit cell
+    drAmt = drAmt ? parseFloat(drAmt.data) : 0; // the amount, 0 if blank
+    crAmt = crAmt ? parseFloat(crAmt.data) : 0;
+
+    // Calculate the net amount for the transaction, and update global variable
+    // with total value of transactions cleared in this session
+    var netAmt = drAmt - crAmt;
+    if ( cbox.checked )
+        cleared += netAmt;
+    else
+        cleared -= netAmt;
+
+    // Update three fields in the reconciliation box: cleared, total cleared, and difference
+    gid("cleared").firstChild.data = cleared;
+    gid("tot_cleared").firstChild.data = pr_cleared + cleared;
+    gid("diff").firstChild.data = stmt_bal - (pr_cleared + cleared);
+
+    // Send an AJAX request to the server, to toggle the cleared column for
+    // this transaction
+}
+
+
+// Update the statement balance during reconciliation
+function reconcileSetStmtBal(evt)
+{
+    // Get field value, make sure a number
+    var field = evt.target,
+        value = parseFloat(field.value);
+    if ( isNaN(value) ) {
+        alert("Invalid value!");
+        return;
+    }
+
+    // Update the value in global variable
+    stmt_bal = value;
+
+    // Update the "difference" field
+    var diff = gid("diff");
+    diff.firstChild.data = stmt_bal - (pr_cleared + cleared);
+
+    // Send an AJAX request to the server, to update the value
+}
+
+
+// Get element by id
+function gid(eid)
+{
+    return document.getElementById(eid);
+}
+
+
+// Convert "2016-01-23" to UTC date, for highcharts time axis
 function dateStringToUTC(s)
 {
     var d = new Date(s);
     return Date.UTC(d.getYear() + 1900, d.getMonth(), d.getDate());
 }
-
-// Draw the graph
-$(function() {
-
-    if ( ! document.getElementById("loans_graph") )
-        return;
-
-    // Parse the data into an array of objects of format:
-    // name: "series name"
-    // data: [[x1, y1], [x2, y2], ...]
-    var data = [];
-    for ( var n in loans ) {        // each name
-        var s = loans[n],           // list of [date, amt] pairs
-            cumul = 0,              // cumulative value
-            points = [];            // array of points to add
-        for ( var i = 0; i < s.length; ++i ) {
-            var x = s[i][0],        // date as string
-                y = s[i][1] * 1;    // amount for this deposit
-            cumul += y;             // convert to cumulative
-            points.push([dateStringToUTC(x), cumul]);
-        }
-        data.push({ name: n, data: points });
-    }
-
-    // Draw the graph
-    $("#loans_graph").highcharts({
-        chart: { type: "line" },
-        title: { text: null }, //"Loans to Datamind" },
-        xAxis: { 
-            type: "datetime", 
-            title: { text: "Date" }
-        },
-        yAxis: { title: { text: "Cumulative" }, min: 0 },
-        tooltip: {
-            headerFormat: "<b>{series.name}</b><br>",
-            pointFormat: "{point.x: %e %b}: {point.y: .2f}"
-        },
-        legend: {
-            layout: "horizontal",
-            align: "center",
-            verticalAlign: "top",
-            floating: true,
-            borderWidth: 1,
-            margin: 20
-        },
-        plotOptions: { spline: { marker: { enabled: true } } },
-        series: data
-    });
-});
-
 
