@@ -194,8 +194,8 @@ class Main:
                 s.write(' <td><input type="checkbox" id="clear%d" %s onchange="checkReconcile(event)" /></td>\n' % (l.id, ck))
             else:
                 s.write(' <td>%s</td>\n' % l.cleared)
-            s.write(' <td style="text-align: right">%s</td>\n' % ('' if cr == 0.0 else '%.2f' % cr))
             s.write(' <td style="text-align: right">%s</td>\n' % ('' if dr == 0.0 else '%.2f' % dr))
+            s.write(' <td style="text-align: right">%s</td>\n' % ('' if cr == 0.0 else '%.2f' % cr))
             s.write(' <td style="text-align: right">%.2f</td>\n' % bal)
             s.write('</tr>\n')
 
