@@ -187,7 +187,8 @@ class Main:
             bal += (dr - cr)
 
             s.write('<tr>\n')
-            s.write(' <td>%s <a href="/qtransaction?aid=%d&tid=%d"><img src="/static/edit.gif"/></a></td>\n' % (t.tdate, aid, t.id))
+            tdate = format_date(t.tdate)
+            s.write(' <td>%s <a href="/qtransaction?aid=%d&tid=%d"><img src="/static/edit.gif"/></a></td>\n' % (tdate, aid, t.id))
             s.write(' <td>%s</td>\n' % t.description)
             if reconciling and l.cleared != 'X':
                 ck = 'checked' if l.cleared == '*' else ''
@@ -681,10 +682,13 @@ def parse_date(s):
     except Exception, e:
         return None
 
+
 # Format a date as "dd/mm/yyyy"
 def format_date(d):
     return '%02d/%02d/%d' % (d.day, d.month, d.year) 
 
+
+# WHY IS THERE A SECOND VERSION OF THIS (SEE ABOVE)?
 def parse_float(n):
     n = n.strip()
     if len(n) == 0:
